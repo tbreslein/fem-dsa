@@ -21,3 +21,9 @@ func TestBinarySearch(t *testing.T) {
 	assert.Equal(t, BinarySearch(&foo, 15), -1, "no 15 in the array")
 	assert.NotEqual(t, BinarySearch(&foo, 32), 8, "find 32")
 }
+
+func TestCrystalBall(t *testing.T) {
+	assert.Equal(t, CrystalBall(&[]bool{false, false, false, true, true, true}), 3, "test1")
+	assert.Equal(t, CrystalBall(&[]bool{false, true}), 1, "test2")
+	assert.Equal(t, CrystalBall(&[]bool{true, true, true, true, true, true}), 0, "test3")
+}

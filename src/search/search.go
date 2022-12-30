@@ -1,7 +1,10 @@
 // Package search funcs
 package search
 
-import "golang.org/x/exp/constraints"
+import (
+  "math"
+  "golang.org/x/exp/constraints"
+)
 
 // LinearSearch Just walk the array from the beginning till we find the thing we are looking for, and return its index.
 //
@@ -41,4 +44,33 @@ func BinarySearch[T constraints.Ordered](haystack *[]T, needle T) int {
 		}
 	}
   return -1
+}
+
+// CrystalBall You have two identical crystal balls, find the floor of a tall building at which they break
+//
+// The idea is that linear search is too slow and binary search by itself cannot be used (because we might break both
+// balls before finding the correct floor), so instead we hop from the ground floor upwards in steps of sqrt(height)
+// until the first ball breaks, and then we go up from the last safe point we know linearly till our second ball breaks.
+//
+// Time comp: O(sqrt(n)), since we go up in steps of sqrt(n) initially, and in the "linear" phase after breaking the
+// ball we only have to traverse at worst another sqrt(n) steps. So, at worst, we traverse 2*sqrt(n) elements.
+func CrystalBall(building *[]bool) int {
+  maxHeight := len(*building)
+  dist := int(math.Sqrt(float64(maxHeight)))
+  lastPos := 0
+  for lastPos < maxHeight - 1 {
+    nextFloor := int(math.Min(float64(lastPos + dist), float64(maxHeight)))
+    if (*building)[lastPos + dist] {
+      break;
+    }
+    lastPos = nextFloor
+  }
+  for lastPos < lastPos + dist {
+    if (*building)[lastPos] {
+      break
+    }
+    lastPos++
+  }
+
+  return lastPos;
 }
