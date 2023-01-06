@@ -23,10 +23,12 @@ func NewList[T any]() List[T] {
 }
 
 func (l *List[T]) PeekFront() T {
+  // if head == nil { return error... }
   return l.head.value
 }
 
 func (l *List[T]) PeekBack() T {
+  // if tail == nil { return error... }
   return l.tail.value
 }
 
