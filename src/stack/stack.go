@@ -4,26 +4,26 @@ package stack
 import "github.com/tbreslein/fem-dsa/src/list"
 
 type Stack[T any] struct {
-	list *list.List[T]
+	List *list.List[T]
 }
 
 func NewStack[T any]() Stack[T] {
 	list := list.NewList[T]()
-	return Stack[T]{list: &list}
+	return Stack[T]{List: &list}
 }
 
 func (s *Stack[T]) Push(val T) {
-	s.list.PushFront(val)
+	s.List.PushFront(val)
 }
 
-func (s *Stack[T]) Pop(val T) {
-	s.list.PopFront()
+func (s *Stack[T]) Pop() T {
+	return s.List.PopFront()
 }
 
 func (s *Stack[T]) Peek() T {
-	return s.list.PeekFront()
+	return s.List.PeekFront()
 }
 
 func (s *Stack[T]) ToString() {
-	s.list.ToString()
+	s.List.ToString()
 }
