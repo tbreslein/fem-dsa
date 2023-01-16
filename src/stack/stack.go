@@ -3,27 +3,33 @@ package stack
 
 import "github.com/tbreslein/fem-dsa/src/list"
 
+// Stack simple LIFO list structure
 type Stack[T any] struct {
 	List *list.List[T]
 }
 
+// NewStack construct a new stack
 func NewStack[T any]() Stack[T] {
 	list := list.NewList[T]()
 	return Stack[T]{List: &list}
 }
 
+// Push push value to the top of the stack
 func (s *Stack[T]) Push(val T) {
 	s.List.PushFront(val)
 }
 
-func (s *Stack[T]) Pop() T {
+// Pop pop value of the top of the stack, unless the stack is empty
+func (s *Stack[T]) Pop() (T, error) {
 	return s.List.PopFront()
 }
 
-func (s *Stack[T]) Peek() T {
+// Peek return a copy of the value at the top of the stack, unless the stack is empty
+func (s *Stack[T]) Peek() (T, error) {
 	return s.List.PeekFront()
 }
 
-func (s *Stack[T]) ToString() {
-	s.List.ToString()
+// ToString converts the stack to a string
+func (s *Stack[T]) ToString() string {
+	return s.List.ToString()
 }
