@@ -29,6 +29,11 @@ func (s *Stack[T]) Peek() (T, error) {
 	return s.List.PeekFront()
 }
 
+// Length returns the length of the queue
+func (s *Stack[T]) Length() int {
+  return s.List.Length
+}
+
 // ToString converts the stack to a string
 func (s *Stack[T]) ToString() string {
 	return s.List.ToString()

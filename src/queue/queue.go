@@ -29,6 +29,11 @@ func (q *Queue[T]) Peek() (T, error) {
 	return q.list.PeekFront()
 }
 
+// Length returns the length of the queue
+func (q *Queue[T]) Length() int {
+  return q.list.Length
+}
+
 // ToString convert the queue to a string
 func (q *Queue[T]) ToString() string {
 	return q.list.ToString()
