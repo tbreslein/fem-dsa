@@ -4,12 +4,12 @@ package stack
 import "github.com/tbreslein/fem-dsa/src/list"
 
 // Stack simple LIFO list structure
-type Stack[T any] struct {
+type Stack[T comparable] struct {
 	List *list.List[T]
 }
 
 // NewStack construct a new stack
-func NewStack[T any]() Stack[T] {
+func NewStack[T comparable]() Stack[T] {
 	list := list.NewList[T]()
 	return Stack[T]{List: &list}
 }
@@ -31,7 +31,7 @@ func (s *Stack[T]) Peek() (T, error) {
 
 // Length returns the length of the queue
 func (s *Stack[T]) Length() int {
-  return s.List.Length
+	return s.List.Length
 }
 
 // ToString converts the stack to a string

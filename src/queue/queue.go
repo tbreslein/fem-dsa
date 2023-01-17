@@ -4,12 +4,12 @@ package queue
 import "github.com/tbreslein/fem-dsa/src/list"
 
 // Queue FIFO list structure
-type Queue[T any] struct {
+type Queue[T comparable] struct {
 	list *list.List[T]
 }
 
 // NewQueue Construct a new queue
-func NewQueue[T any]() Queue[T] {
+func NewQueue[T comparable]() Queue[T] {
 	list := list.NewList[T]()
 	return Queue[T]{list: &list}
 }
@@ -31,7 +31,7 @@ func (q *Queue[T]) Peek() (T, error) {
 
 // Length returns the length of the queue
 func (q *Queue[T]) Length() int {
-  return q.list.Length
+	return q.list.Length
 }
 
 // ToString convert the queue to a string
