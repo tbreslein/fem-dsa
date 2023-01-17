@@ -8,79 +8,79 @@ import (
 	"strings"
 )
 
-type node[T any] struct {
-	value T
-	next  *node[T]
-	prev  *node[T]
+type Node[T any] struct {
+	Value T
+	next  *Node[T]
+	prev  *Node[T]
 }
 
 // List double linked list
 type List[T comparable] struct {
-	head   *node[T]
-	tail   *node[T]
+	Head   *Node[T]
+	Tail   *Node[T]
 	Length int
 }
 
 // NewList create a new empty list
 func NewList[T comparable]() List[T] {
-	return List[T]{head: nil, tail: nil, Length: 0}
+	return List[T]{Head: nil, Tail: nil, Length: 0}
 }
 
 // PeekFront returns copy of value at head or an error
 func (l *List[T]) PeekFront() (T, error) {
-	if l.head == nil {
+	if l.Head == nil {
 		return *new(T), errors.New("cannot peek at empty list")
 	}
-	return l.head.value, nil
+	return l.Head.Value, nil
 }
 
 // PeekBack returns copy of value at tail or an error
 func (l *List[T]) PeekBack() (T, error) {
-	if l.tail == nil {
+	if l.Tail == nil {
 		return *new(T), errors.New("cannot peek at empty list")
 	}
-	return l.tail.value, nil
+	return l.Tail.Value, nil
 }
 
 // PushFront push new val to the front of the list
 func (l *List[T]) PushFront(val T) {
-	newNode := node[T]{value: val, next: l.head, prev: nil}
+	newNode := Node[T]{Value: val, next: l.Head, prev: nil}
 	l.Length++
-	if l.head == nil && l.tail == nil {
-		l.tail = &newNode
+	if l.Head == nil && l.Tail == nil {
+		l.Tail = &newNode
 	}
-	if l.head != nil {
-		l.head.prev = &newNode
+	if l.Head != nil {
+		l.Head.prev = &newNode
 	}
-	l.head = &newNode
+	l.Head = &newNode
 }
 
 // PushBack push new val to the back of the list
 func (l *List[T]) PushBack(val T) {
-	newNode := node[T]{value: val, next: nil, prev: l.tail}
+	newNode := Node[T]{Value: val, next: nil, prev: l.Tail}
 	l.Length++
-	if l.head == nil && l.tail == nil {
-		l.head = &newNode
+	if l.Head == nil && l.Tail == nil {
+		l.Head = &newNode
 	}
-	if l.tail != nil {
-		l.tail.next = &newNode
+	if l.Tail != nil {
+		l.Tail.next = &newNode
 	}
-	l.tail = &newNode
+	l.Tail = &newNode
 }
 
 // PopFront pop the front of the list and return the value, unless the list is empty
 func (l *List[T]) PopFront() (T, error) {
-	if l.head == nil {
+	if l.Head == nil {
 		return *new(T), errors.New("cannot pop of empty list")
 	}
-	val := l.head.value
-	if l.head.next != nil {
-		l.head.next.prev = nil
-		l.head = l.head.next
+	val := l.Head.Value
+	if l.Head.next != nil {
+		l.Head.next.prev = nil
+		l.Head = l.Head.next
 	} else {
 		// this is the last element
-		l.head = nil
-		l.tail = nil
+		l.Head = nil
+		l.Tail = nil
 	}
 	l.Length--
 	return val, nil
@@ -88,17 +88,17 @@ func (l *List[T]) PopFront() (T, error) {
 
 // PopBack pop the back of the list and return the value, unless the list is empty
 func (l *List[T]) PopBack() (T, error) {
-	if l.tail == nil {
+	if l.Tail == nil {
 		return *new(T), errors.New("cannot peek at empty list")
 	}
-	val := l.tail.value
-	if l.tail.prev != nil {
-		l.tail = l.tail.prev
-		l.tail.next = nil
+	val := l.Tail.Value
+	if l.Tail.prev != nil {
+		l.Tail = l.Tail.prev
+		l.Tail.next = nil
 	} else {
 		// this is the last element
-		l.head = nil
-		l.tail = nil
+		l.Head = nil
+		l.Tail = nil
 	}
 	l.Length--
 	return val, nil
@@ -118,12 +118,12 @@ func (l *List[T]) InsertAt(val T, idx int) error {
 	l.Length++
 
 	// find node in front of idx
-	currentNode := l.head
+	currentNode := l.Head
 	for i := 0; i < idx; i++ {
 		currentNode = currentNode.next
 	}
 	// attach new node first...
-	newNode := node[T]{value: val, next: currentNode.next, prev: currentNode}
+	newNode := Node[T]{Value: val, next: currentNode.next, prev: currentNode}
 
 	// ... then break old links
 	currentNode.prev.next = &newNode
@@ -136,7 +136,7 @@ func (l *List[T]) Remove(val T) error {
 	if l.Length == 0 {
 		return errors.New("cannot remove items from an empty list")
 		// the else if l.head.value == val will be handled by the for loop directly
-	} else if l.tail.value == val {
+	} else if l.Tail.Value == val {
 		l.PopBack()
 	}
 
@@ -151,11 +151,11 @@ func (l *List[T]) Remove(val T) error {
 	currentNode.prev.next = nextNode
 	currentNode.next.prev = prevNode
 
-	if currentNode == l.head {
-		l.head = currentNode.next
+	if currentNode == l.Head {
+		l.Head = currentNode.next
 	}
-	if currentNode == l.tail {
-		l.tail = currentNode.prev
+	if currentNode == l.Tail {
+		l.Tail = currentNode.prev
 	}
 
 	// now that nothing is pointing at currentNode anymore, we need to make sure that currentNode isn't pointing
@@ -171,7 +171,7 @@ func (l *List[T]) Remove(val T) error {
 // Get returns a copy of the element at idx, or an error
 func (l *List[T]) Get(idx int) (T, error) {
   node, err := l.findAt(idx)
-  return node.value, err
+  return node.Value, err
 }
 
 // RemoveAt removes element at idx returns the value of that element, unless an error ocurred
@@ -191,7 +191,7 @@ func (l *List[T]) RemoveAt(idx int) (T, error) {
 
   prevNode := currentNode.prev
   nextNode := currentNode.next
-  val := currentNode.value
+  val := currentNode.Value
 
   prevNode.next = nextNode
   nextNode.prev = prevNode
@@ -201,32 +201,32 @@ func (l *List[T]) RemoveAt(idx int) (T, error) {
   return val, nil
 }
 
-func (l *List[T]) find(val T) (*node[T], error) {
-  currentNode := l.head
+func (l *List[T]) find(val T) (*Node[T], error) {
+  currentNode := l.Head
   for currentNode != nil {
-    if currentNode.value == val {
+    if currentNode.Value == val {
       break
     }
     currentNode = currentNode.next
   }
   if currentNode == nil {
-    return *new(*node[T]), errors.New("unable to find value in list")
+    return *new(*Node[T]), errors.New("unable to find value in list")
   }
   return currentNode, nil
 }
 
-func (l *List[T]) findAt(idx int) (*node[T], error) {
-  currentNode := l.head
+func (l *List[T]) findAt(idx int) (*Node[T], error) {
+  currentNode := l.Head
   if currentNode == nil {
-    return *new(*node[T]), errors.New("list is empty")
+    return *new(*Node[T]), errors.New("list is empty")
   } else if idx < l.Length {
-    return *new(*node[T]), errors.New("idx out of bounds")
+    return *new(*Node[T]), errors.New("idx out of bounds")
   }
 
   if idx == l.Length-1 {
-    return l.tail, nil
+    return l.Tail, nil
   } else if idx == 0 {
-    return l.head, nil
+    return l.Head, nil
   }
 
   for i := 0; currentNode != nil && i <= idx; i++ {
@@ -239,9 +239,9 @@ func (l *List[T]) findAt(idx int) (*node[T], error) {
 func (l *List[T]) ToString() string {
 	var buf bytes.Buffer
 	buf.WriteString("[ ")
-	n := l.head
+	n := l.Head
 	for n != nil {
-		buf.WriteString(fmt.Sprintf("%v ", n.value))
+		buf.WriteString(fmt.Sprintf("%v ", n.Value))
 		n = n.next
 	}
 	buf.WriteString("]\n")
