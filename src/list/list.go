@@ -141,15 +141,10 @@ func (l *List[T]) Remove(val T) error {
 	}
 
 	l.Length--
-	currentNode := l.head
-	for i := 0; i < l.Length; i++ {
-		if i == l.Length-1 && currentNode.value != val {
-			return errors.New("unable to find element in list")
-		} else if currentNode.value == val {
-			break
-		}
-		currentNode = currentNode.next
-	}
+	currentNode, err := l.find(val)
+  if err != nil {
+    return err
+  }
 
 	prevNode := currentNode.prev
 	nextNode := currentNode.next
@@ -171,6 +166,73 @@ func (l *List[T]) Remove(val T) error {
 	// now currentNode will be swept by the GC
 
 	return nil
+}
+
+// Get returns a copy of the element at idx, or an error
+func (l *List[T]) Get(idx int) (T, error) {
+  node, err := l.findAt(idx)
+  return node.value, err
+}
+
+// RemoveAt removes element at idx returns the value of that element, unless an error ocurred
+func (l *List[T]) RemoveAt(idx int) (T, error) {
+  currentNode, err := l.findAt(idx)
+  if err != nil {
+    return *new(T), err
+  }
+
+  if idx == 0 {
+    return l.PopFront()
+  } else if idx == l.Length-1 {
+    return l.PopBack()
+  }
+
+  l.Length--
+
+  prevNode := currentNode.prev
+  nextNode := currentNode.next
+  val := currentNode.value
+
+  prevNode.next = nextNode
+  nextNode.prev = prevNode
+  currentNode.prev = nil
+  currentNode.next = nil
+
+  return val, nil
+}
+
+func (l *List[T]) find(val T) (*node[T], error) {
+  currentNode := l.head
+  for currentNode != nil {
+    if currentNode.value == val {
+      break
+    }
+    currentNode = currentNode.next
+  }
+  if currentNode == nil {
+    return *new(*node[T]), errors.New("unable to find value in list")
+  }
+  return currentNode, nil
+}
+
+func (l *List[T]) findAt(idx int) (*node[T], error) {
+  currentNode := l.head
+  if currentNode == nil {
+    return *new(*node[T]), errors.New("list is empty")
+  } else if idx < l.Length {
+    return *new(*node[T]), errors.New("idx out of bounds")
+  }
+
+  if idx == l.Length-1 {
+    return l.tail, nil
+  } else if idx == 0 {
+    return l.head, nil
+  }
+
+  for i := 0; currentNode != nil && i <= idx; i++ {
+    currentNode = currentNode.next
+  }
+  return currentNode, nil
 }
 
 // ToString Convert the list to a string
